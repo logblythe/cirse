@@ -1,0 +1,28 @@
+{
+  "id": "6580b975c4705d29be1e70f2",
+  "eventId": "142616",
+  "criteria": [
+    {
+      "questionId": "reg_type_id",
+      "questionName": "Select a registrant type",
+      "condition": "==",
+      "type": "radioList",
+      "values": ["509119"]
+    },
+    {
+      "questionId": "c_3416769",
+      "questionName": "Digital attendee type assignment",
+      "condition": "!=",
+      "type": "checkboxList",
+      "values": ["17147017"]
+    }
+  ],
+  "rule": {
+    "ruleName": "Attendee Type - General Attendee",
+    "questionId": "c_1643287",
+    "questionName": "Attendee type",
+    "type": "checkboxList",
+    "value": "8030818"
+  },
+  "operator": "AND"
+}
