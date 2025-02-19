@@ -82,11 +82,17 @@ class ApiClient {
   public async getUsers(data: {
     page: number;
     size: number;
+    portalId?: string;
   }): Promise<PaginatedResponse<User>> {
-    const { page, size } = data;
+    const { page, size, portalId } = data;
+    const params = new URLSearchParams();
+
+    if (page) params.set("page", String(page));
+    if (size) params.set("size", String(size));
+    if (portalId) params.set("portalId", portalId);
 
     return this.request<PaginatedResponse<User>>(
-      `${apiUrls.users.get}?page=${page}&size=${size}`
+      `${apiUrls.users.get}?${params.toString()}`
     );
   }
 
@@ -141,6 +147,31 @@ class ApiClient {
   public async getEventPortals(eventId: string): Promise<Portal[]> {
     return this.request<Portal[]>(
       apiUrls.portalsManagement.getEventPortals(eventId)
+    );
+  }
+
+  public async getPortalTemplates(): Promise<Portal[]> {
+    return this.request<Portal[]>(apiUrls.portalsManagement.getPortalTemplates);
+  }
+
+  public async getPortalDetails(portalId: string): Promise<Portal> {
+    return this.request<Portal>(
+      apiUrls.portalsManagement.getPortalDetails(portalId)
+    );
+  }
+
+  public async addPortalToEvent(
+    eventId: string,
+    templateId: string
+  ): Promise<void> {
+    const url = apiUrls.portalsManagement.addPortalToEvent(eventId);
+    return this.request<void>(`${url}?templateId=${templateId}`, "PUT");
+  }
+
+  public async removePortalFromEvent(portalId: string): Promise<void> {
+    return this.request<void>(
+      apiUrls.portalsManagement.removePortalFromEvent(portalId),
+      "DELETE"
     );
   }
 }

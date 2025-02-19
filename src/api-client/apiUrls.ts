@@ -17,5 +17,11 @@ export const apiUrls = {
   portalsManagement: {
     getEventPortals: (eventId: string) =>
       `/portals-mgmt/events/${eventId}/portals`,
+    getPortalTemplates: "/portals-mgmt/portal-templates",
+    getPortalDetails: (portalId: string) => `/portals-mgmt/portals/${portalId}`,
+    addPortalToEvent: (eventId: string) =>
+      `/portals-mgmt/events/${eventId}/portals`,
+    removePortalFromEvent: (portalId: string) =>
+      `/portals-mgmt/portals/${portalId}`,
   },
 };

@@ -150,8 +150,8 @@ export default function CreateUserDialog(props: DialogProps) {
               placeholder="Role"
               items={[
                 { name: "Admin", id: "ADMIN" },
-                { name: "Super Admin", id: "SU_ADMIN" },
-                { name: "Portal", id: "PORTAL" },
+                // { name: "Super Admin", id: "SU_ADMIN" },
+                // { name: "Portal", id: "PORTAL" },
               ]}
               disabled={!!user}
             />

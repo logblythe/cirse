@@ -2,7 +2,7 @@ import ApiClient from "@/api-client/";
 import { dehydrate } from "@tanstack/query-core";
 import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { Metadata } from "next";
-import EventsList from "./_components/event-list";
+import LeadRetrievalContent from "./_components/content";
 
 const questionsClient = new ApiClient();
 
@@ -21,7 +21,7 @@ export default async function EventsPage() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <EventsList />
+      <LeadRetrievalContent />
     </HydrationBoundary>
   );
 }
