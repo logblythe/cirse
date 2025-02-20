@@ -64,6 +64,38 @@ class ApiClient {
     return await response.json();
   }
 
+  public async unauthenticatedRequest<T>(
+    endpoint: string,
+    method: string = "GET",
+    headers: Record<string, string> = {},
+    body: any = null
+  ): Promise<T> {
+    const defaultHeaders: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...headers,
+    };
+
+    const options: RequestInit = {
+      method,
+      headers: defaultHeaders,
+    };
+
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, options);
+
+    if (!response.ok) {
+      const responseJson = await response.json();
+      throw new Error(responseJson.message);
+    }
+    if (method === "DELETE") {
+      return response as T;
+    }
+    return await response.json();
+  }
+
   // Example functions
   public async getUserData(userId: number): Promise<any> {
     return this.request<any>(`/users/${userId}`);
@@ -75,7 +107,12 @@ class ApiClient {
 
   //AUTHENTICATION
   public async login(data: any): Promise<AuthUser> {
-    return this.request<AuthUser>(apiUrls.auth.login, "POST", {}, data);
+    return this.unauthenticatedRequest<AuthUser>(
+      apiUrls.auth.login,
+      "POST",
+      {},
+      data
+    );
   }
 
   //USERS
