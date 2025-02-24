@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import LoginForm from "./form";
 
 export const metadata: Metadata = {
-  title: "Conditionize | Login",
+  title: "MyCirse | Login",
   description: "Enter your credentials to get started",
 };
 

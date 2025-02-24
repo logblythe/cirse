@@ -15,7 +15,7 @@ const Navbar = (props: Props) => {
         "w-screen md:w-full sticky z-10 px-8 shadow-sm h-[73px] top-0 ": true, //positioning & styling
       })}
     >
-      <p className="font-bold text-xs md:text-sm">Custom Value Assigner</p>
+      <p className="font-bold text-xs md:text-sm">MyCirse</p>
       <div className="flex-grow"></div>
       <EventSelector />
       <button className="md:hidden ml-4" onClick={props.onMenuButtonClick}>
