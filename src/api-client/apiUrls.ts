@@ -7,6 +7,7 @@ export const apiUrls = {
     post: "/users",
     delete: "/users",
     changePassword: "/users/change-password",
+    toggleAccess: (userId: string) => `/users/${userId}/toggle-access`,
   },
   events: {
     get: "/events",

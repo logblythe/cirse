@@ -142,6 +142,12 @@ class ApiClient {
     return this.request(`${apiUrls.users.delete}/${userId}`, "DELETE");
   }
 
+  public async toggleUserAccess(data: { userId: string }): Promise<void> {
+    const { userId } = data;
+    const url = apiUrls.users.toggleAccess(userId);
+    return this.request(url, "PUT");
+  }
+
   public async changePassword(data: {
     userId: string;
     newPassword: string;

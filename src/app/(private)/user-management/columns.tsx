@@ -1,10 +1,10 @@
 "use client";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
 import { User } from "@/type/user";
 import { ColumnDef } from "@tanstack/react-table";
 import UserAction from "./user-action";
+import { UserToggleSwitch } from "./user-toggle-switch";
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -30,11 +30,7 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "enabled",
     header: "Enabled",
     cell: ({ row }) => {
-      return (
-        <div className="flex items-center space-x-2">
-          <Switch disabled checked={row.original.enabled} />
-        </div>
-      );
+      return <UserToggleSwitch user={row.original} />;
     },
   },
   {
