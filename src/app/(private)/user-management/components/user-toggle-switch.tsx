@@ -33,5 +33,4 @@ export const UserToggleSwitch = ({ user }: { user: User }) => {
       disabled={isPending}
     />
   );
-  return <div>UserToggleSwitch</div>;
 };

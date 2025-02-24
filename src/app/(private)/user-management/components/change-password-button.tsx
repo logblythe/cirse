@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { User } from "@/type/user";
 import React from "react";
-import CreateUserDialog from "./create-user-dialog";
+import CreateUserDialog from "../create-user-dialog";
 
 export const ChangePasswordButton = ({ user }: { user: User }) => {
   const [isOpen, setIsOpen] = React.useState(false);

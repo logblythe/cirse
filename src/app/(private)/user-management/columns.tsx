@@ -3,8 +3,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { User } from "@/type/user";
 import { ColumnDef } from "@tanstack/react-table";
-import UserAction from "./user-action";
-import { UserToggleSwitch } from "./user-toggle-switch";
+import UserAction from "./components/user-action";
+import { UserToggleSwitch } from "./components/user-toggle-switch";
 
 export const columns: ColumnDef<User>[] = [
   {
