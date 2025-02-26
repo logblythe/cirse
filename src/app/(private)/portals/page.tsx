@@ -38,9 +38,7 @@ const PortalsPage = () => {
 
   const removePortalMutation = useMutation({
     mutationFn: (portalId: string) => apiClient.removePortalFromEvent(portalId),
-    onError: (error) => {
-      showErrorToast();
-    },
+    onError: () => showErrorToast(),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events", selectedEventId, "portals"],
@@ -51,7 +49,17 @@ const PortalsPage = () => {
   const portals = eventPortalQuery.data;
 
   const handleRowClick = (portal: Portal) => {
-    router.push(`/lead-retrieval?portalId=${portal.id}`);
+    switch (portal.name.toLowerCase()) {
+      case "lead retrieval api": {
+        router.push(`/lead-retrieval?portalId=${portal.id}`);
+        break;
+      }
+
+      case "session/presentation import": {
+        router.push(`/import?portalId=${portal.id}`);
+        break;
+      }
+    }
   };
 
   const handleRemovePortal = (portalId: string) => {

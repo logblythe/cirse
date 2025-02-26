@@ -1,7 +1,7 @@
 import { AuthUser } from "@/type/auth";
 import { EventType } from "@/type/event-type";
 import { PaginatedResponse } from "@/type/paginated-response";
-import { Portal } from "@/type/portal";
+import { Field, Portal } from "@/type/portal";
 import { User, UserPayload } from "@/type/user";
 import { apiUrls } from "./apiUrls";
 
@@ -215,6 +215,24 @@ class ApiClient {
     return this.request<void>(
       apiUrls.portalsManagement.removePortalFromEvent(portalId),
       "DELETE"
+    );
+  }
+
+  public async updateCustomFields(
+    portalId: string,
+    scope: "SESSION_IMPORT" | "PRESENTATION_IMPORT",
+    customFields: Field[]
+  ): Promise<void> {
+    console.log("🚀 ~ ApiClient ~ customFields:", customFields);
+    const params = new URLSearchParams();
+    params.set("scope", scope);
+    return this.request<void>(
+      `${apiUrls.portalsManagement.updateCustomFields(
+        portalId
+      )}?${params.toString()}`,
+      "POST",
+      {},
+      customFields
     );
   }
 }

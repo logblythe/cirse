@@ -24,5 +24,7 @@ export const apiUrls = {
       `/portals-mgmt/events/${eventId}/portals`,
     removePortalFromEvent: (portalId: string) =>
       `/portals-mgmt/portals/${portalId}`,
+    updateCustomFields: (portalId: string) =>
+      `/portals-mgmt/portals/${portalId}/custom-fields`,
   },
 };
