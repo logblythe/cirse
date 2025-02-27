@@ -43,7 +43,7 @@ export default function LoginForm() {
   const loginMutation = useMutation({
     mutationFn: (data: z.infer<typeof FormSchema>) => apiClient.login(data),
     onSuccess: (data) => {
-      addUser(data);
+      addUser({ ...data, expiresIn: new Date().getTime() + data.expiresIn });
       router.push("/events");
     },
     onError: () => {
