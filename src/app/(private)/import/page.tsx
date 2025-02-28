@@ -4,24 +4,30 @@ import { HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { Metadata } from "next";
 import ImportContent from "./_components/content";
 
-const questionsClient = new ApiClient();
+const apiClient = new ApiClient();
 
 export const metadata: Metadata = {
   title: "CIRSE | Session/Presentation Import",
   description: "Import sessions or presentations",
 };
 
-export default async function ImportPage() {
+export default async function ImportPage({
+  searchParams,
+}: {
+  searchParams: { portalId: string };
+}) {
+  const { portalId } = searchParams;
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["events"],
-    queryFn: () => questionsClient.getEvents(),
+    queryKey: ["portals", portalId],
+    queryFn: () => apiClient.getPortalDetails(portalId!),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ImportContent />
+      <ImportContent portalId={portalId} />
     </HydrationBoundary>
   );
 }
