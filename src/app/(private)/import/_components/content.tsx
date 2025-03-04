@@ -1,15 +1,15 @@
 "use client";
 
 import ApiClient from "@/api-client/";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Field } from "@/type/portal";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Cog, History, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
+import JobStatusDialog from "./job-status-dialog";
+import { UploadView } from "./tab-view";
 
 const FieldSelectionDialog = dynamic(() => import("./field-selection-dialog"), {
   ssr: false,
@@ -22,9 +22,14 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
 
   const searchParams = useSearchParams();
 
+  const activeTab = searchParams.get("tab") ?? "session";
+
   const [isSessionFieldsOpen, setIsSessionFieldOpen] = React.useState(false);
 
   const [isPresentationFieldsOpen, setIsPresentationFieldOpen] =
+    React.useState(false);
+
+  const [isJobStatusDialogOpen, setIsJobStatusDialogOpen] =
     React.useState(false);
 
   const portalDetailsQuery = useQuery({
@@ -54,8 +59,7 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
     },
   });
 
-  const handleUpdateFields = () => {
-    const activeTab = searchParams.get("tab") ?? "session";
+  const showCustomFieldsModal = () => {
     switch (activeTab) {
       case "session":
         setIsSessionFieldOpen(true);
@@ -70,6 +74,16 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
     }
   };
 
+  const handleTabValueChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", value);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const handleJobCreated = () => {
+    setIsJobStatusDialogOpen(true);
+  };
+
   return (
     <>
       <div className="container mx-auto py-10 space-y-2">
@@ -82,29 +96,27 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
               <Loader2 className="h-4 w-4 animate-spin ml-4" />
             ) : null}
           </div>
-          <Button onClick={handleUpdateFields}>Update Fields</Button>
+          <div className="flex flex-row items-center space-x-4">
+            <Cog
+              className="w-6 h-6 cursor-pointer"
+              onClick={showCustomFieldsModal}
+            />
+            <History
+              className="w-6 h-6 cursor-pointer"
+              onClick={() => setIsJobStatusDialogOpen(true)}
+            />
+          </div>
         </div>
-        <Tabs
-          value={searchParams.get("tab") ?? "session"}
-          onValueChange={(value) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("tab", value);
-            router.push(`?${params.toString()}`, { scroll: false });
-          }}
-        >
+        <Tabs value={activeTab} onValueChange={handleTabValueChange}>
           <TabsList>
             <TabsTrigger value="session">Session</TabsTrigger>
             <TabsTrigger value="presentation">Presentation</TabsTrigger>
           </TabsList>
           <TabsContent value="session">
-            <Card className="w-full h-full">
-              <CardContent className="text-sm py-4 space-y-8 flex flex-col"></CardContent>
-            </Card>
+            <UploadView onJobCreated={handleJobCreated} />
           </TabsContent>
           <TabsContent value="presentation">
-            <Card className="w-full">
-              <CardContent className="text-sm py-4 space-y-8 flex flex-col"></CardContent>
-            </Card>
+            <UploadView onJobCreated={handleJobCreated} />
           </TabsContent>
         </Tabs>
       </div>
@@ -127,6 +139,11 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
         onMutate={(fields) => {
           updatePresentationFieldsMutation.mutate({ fields });
         }}
+      />
+      <JobStatusDialog
+        open={isJobStatusDialogOpen}
+        onOpenChange={() => setIsJobStatusDialogOpen(false)}
+        portalId={portalId}
       />
     </>
   );
