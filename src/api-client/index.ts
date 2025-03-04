@@ -223,7 +223,6 @@ class ApiClient {
     scope: "SESSION_IMPORT" | "PRESENTATION_IMPORT",
     customFields: Field[]
   ): Promise<void> {
-    console.log("🚀 ~ ApiClient ~ customFields:", customFields);
     const params = new URLSearchParams();
     params.set("scope", scope);
     return this.request<void>(
@@ -234,6 +233,31 @@ class ApiClient {
       {},
       customFields
     );
+  }
+
+  public async uploadAndCreateJob(
+    portalId: string,
+    purpose:
+      | "IMPORT_SESSIONS"
+      | "IMPORT_PRESENTATIONS"
+      | "EXPORT_SESSIONS"
+      | "EXPORT_PRESENTATIONS",
+    file: File
+  ): Promise<void> {
+    const params = new URLSearchParams();
+    params.set("purpose", purpose);
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request<void>(
+      apiUrls.files.uploadAndCreateJob(portalId) + "?" + params.toString(),
+      "POST",
+      {},
+      formData
+    );
+  }
+
+  public async getJobs(portalId: string): Promise<PaginatedResponse<Job>> {
+    return this.request<PaginatedResponse<Job>>(apiUrls.files.jobs(portalId));
   }
 }
 

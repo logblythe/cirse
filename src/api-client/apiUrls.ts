@@ -27,4 +27,8 @@ export const apiUrls = {
     updateCustomFields: (portalId: string) =>
       `/portals-mgmt/portals/${portalId}/custom-fields`,
   },
+  files: {
+    uploadAndCreateJob: (portalId: string) => `/files/portals/${portalId}/jobs`,
+    jobs: (portalId: string) => `/files/portals/${portalId}/jobs`,
+  },
 };
