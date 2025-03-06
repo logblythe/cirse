@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   if (!user) {
     return NextResponse.redirect(new URL(`/login`, request.url));
   }
-  const hasTokenExpired = user && new Date().getTime() > user.expiresIn;
+  const hasTokenExpired = user && new Date().getSeconds() > user.expiresIn;
   if (hasTokenExpired) {
     return NextResponse.redirect(new URL(`/login`, request.url));
   }
@@ -17,5 +17,5 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/events/:path*", "/rules/:path*", "/webhooks/:path*"],
+  matcher: "/((?!_next/static|_next/image|favicon.ico|login).*)",
 };
