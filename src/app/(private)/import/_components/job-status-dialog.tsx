@@ -11,10 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { JobStatus } from "@/type/job";
 import { useQuery } from "@tanstack/react-query";
 import {
+  CircleCheck,
+  CircleX,
   CloudDownload,
-  FileSpreadsheet,
   Loader2,
   RefreshCcw,
 } from "lucide-react";
@@ -27,6 +29,13 @@ type DialogProps = {
 };
 
 const apiClient = new ApiClient();
+
+const STATUS_ICON_MAP: Record<JobStatus, React.ReactElement> = {
+  CREATED: <Loader2 className="w-6 h-6 animate-spin text-blue-600" />,
+  IN_PROGRESS: <Loader2 className="w-6 h-6 animate-spin text-blue-600" />,
+  COMPLETED: <CircleCheck className="w-6 h-6  text-green-600" />,
+  FAILED: <CircleX className="w-6 h-6 text-red-500" />,
+};
 
 export default function JobStatusDialog(props: DialogProps) {
   const { open, onOpenChange, portalId } = props;
@@ -74,25 +83,28 @@ export default function JobStatusDialog(props: DialogProps) {
             </div>
           ) : (
             <div className="flex flex-col space-y-2">
-              {jobsQuery.data?.data.map((job) => (
-                <Card
-                  key={job.jobId}
-                  className="flex flex-row justify-between items-center p-4 bg-gray-100 rounded-lg"
-                >
-                  <div className="flex flex-row space-x-4 items-center w-full">
-                    <FileSpreadsheet className="w-10 h-10 text-green-500" />
-                    <div className="flex flex-col flex-1 space-y-1">
-                      <p className="text-sm font-semibold">{job.fileName}</p>
-                      <p className="text-sm text-gray-500">{job.status}</p>
+              {jobsQuery.data?.data.map((job) => {
+                const status = job.status;
+                return (
+                  <Card
+                    key={job.jobId}
+                    className="flex flex-row justify-between items-center p-4 bg-gray-100 rounded-lg"
+                  >
+                    <div className="flex flex-row space-x-4 items-center w-full">
+                      {STATUS_ICON_MAP[status]}
+                      <div className="flex flex-col flex-1 space-y-1">
+                        <p className="text-sm font-semibold">{job.fileName}</p>
+                        <p className="text-sm text-gray-500">{job.status}</p>
+                      </div>
+                      {job.downloadable ? (
+                        <Button variant="outline" size="icon">
+                          <CloudDownload className="w-4 h-4" />
+                        </Button>
+                      ) : null}
                     </div>
-                    {job.downloadable ? (
-                      <Button variant="outline" size="icon">
-                        <CloudDownload className="w-4 h-4" />
-                      </Button>
-                    ) : null}
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>

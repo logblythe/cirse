@@ -1,5 +1,6 @@
 import { AuthUser } from "@/type/auth";
 import { EventType } from "@/type/event-type";
+import { Job } from "@/type/job";
 import { PaginatedResponse } from "@/type/paginated-response";
 import { Field, Portal } from "@/type/portal";
 import { User, UserPayload } from "@/type/user";
