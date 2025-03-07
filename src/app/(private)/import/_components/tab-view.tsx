@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
 import { Portal } from "@/type/portal";
+import { capitalizeInitial } from "@/utils/capitalize-initials";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CircleX, FileSpreadsheet, Loader2, UploadIcon } from "lucide-react";
@@ -44,8 +45,9 @@ export const UploadView = ({ onJobCreated }: Props) => {
     mutationFn: () =>
       apiClient.uploadAndCreateJob(portalId!, purpose, selectedFile!),
     onSuccess: () => {
+      onRemoveFileClick();
       toast({
-        title: `${activeTab} imported successfully`,
+        title: `${capitalizeInitial(activeTab)} imported successfully`,
         description: "You can view the status of the import in the jobs tab",
         action: (
           <ToastAction altText="Try again" onClick={onJobCreated}>
@@ -54,6 +56,11 @@ export const UploadView = ({ onJobCreated }: Props) => {
         ),
       });
       queryClient.invalidateQueries({ queryKey: ["jobs", portalId] });
+    },
+    onError: ({ message }) => {
+      const error = JSON.parse(message);
+      const errorDetails: Record<string, string[]> = error.details;
+      setErrors(errorDetails);
     },
   });
 

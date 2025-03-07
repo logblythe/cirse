@@ -76,10 +76,9 @@ export default class HttpClient {
     };
 
     const response = await fetch(`${this.baseUrl}${endpoint}`, options);
-
     if (!response.ok) {
       const responseJson = await response.json();
-      throw new Error(responseJson.message);
+      throw new Error(JSON.stringify(responseJson));
     }
     if (method === "DELETE") {
       return response as T;

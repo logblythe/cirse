@@ -186,7 +186,6 @@ class ApiClient {
       apiUrls.files.uploadAndCreateJob(portalId) + "?" + params.toString();
     const formData = new FormData();
     formData.append("file", file);
-
     return this.httpClient.multiPartRequest<void>(url, "POST", {}, formData);
   }
 
