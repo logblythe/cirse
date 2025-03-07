@@ -2,6 +2,7 @@
 
 import ApiClient from "@/api-client/";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/components/ui/use-toast";
 import { Field } from "@/type/portal";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Cog, History, Loader2 } from "lucide-react";
@@ -44,6 +45,10 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
       apiClient.updateCustomFields(portalId!, "SESSION_IMPORT", payload.fields),
     onSettled: () => {
       portalDetailsQuery.refetch();
+      toast({
+        title: `Session custom field updated successfully`,
+      });
+      setIsSessionFieldOpen(false);
     },
   });
 
@@ -56,6 +61,10 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
       ),
     onSettled: () => {
       portalDetailsQuery.refetch();
+      toast({
+        title: `Presentation custom field updated successfully`,
+      });
+      setIsPresentationFieldOpen(false);
     },
   });
 

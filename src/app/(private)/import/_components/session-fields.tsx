@@ -27,7 +27,7 @@ export const FieldSelectionGrid = (props: Props) => {
           {localFields?.map((field) => {
             return (
               <FieldCheckbox
-                key={field.id}
+                key={`${field.id}-${field.enabled}`}
                 label={field.name}
                 checked={field.enabled}
                 onCheckedChange={(value) => {

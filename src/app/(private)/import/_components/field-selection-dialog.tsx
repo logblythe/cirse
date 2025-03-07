@@ -12,6 +12,7 @@ import {
 import { Field } from "@/type/portal";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
+import { FieldCheckbox } from "./field-checkbox";
 import { FieldSelectionGrid } from "./session-fields";
 
 type DialogProps = {
@@ -24,13 +25,17 @@ type DialogProps = {
 };
 
 export default function FieldSelectionDialog(props: DialogProps) {
-  const { open, onOpenChange, isPending, scope, onMutate, fields } = props;
+  const { open, onOpenChange, isPending, scope, onMutate } = props;
 
-  const [localFields, setLocalFields] = useState(fields);
+  const [shouldSelectAll, setShouldSelectAll] = useState(
+    props.fields.every(({ enabled }) => enabled)
+  );
+
+  const [localFields, setLocalFields] = useState(props.fields);
 
   React.useEffect(() => {
-    setLocalFields(fields);
-  }, [fields]);
+    setLocalFields(props.fields);
+  }, [props.fields]);
 
   const handleModalClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -53,22 +58,45 @@ export default function FieldSelectionDialog(props: DialogProps) {
         <div className="flex-1 overflow-auto">
           <FieldSelectionGrid
             localFields={localFields}
-            onUpdateFields={setLocalFields}
+            onUpdateFields={(fields) => {
+              setLocalFields(fields);
+              setShouldSelectAll(fields.every(({ enabled }) => enabled));
+            }}
           />
         </div>
         <DialogFooter>
-          <Button
-            disabled={isPending}
-            onClick={(e) => {
-              e.preventDefault();
-              onMutate(localFields);
-            }}
-          >
-            {isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin mr-4" />
-            ) : null}
-            Save
-          </Button>
+          <div className="flex flex-row justify-between w-full px-2">
+            <FieldCheckbox
+              key={`${shouldSelectAll}`}
+              label="Select All"
+              checked={shouldSelectAll}
+              onCheckedChange={(value) => {
+                setShouldSelectAll(Boolean(value));
+                if (Boolean(value)) {
+                  setLocalFields((prev) =>
+                    prev.map((field) => ({ ...field, enabled: true }))
+                  );
+                } else {
+                  setLocalFields((prev) =>
+                    prev.map((field) => ({ ...field, enabled: false }))
+                  );
+                }
+              }}
+            />
+            <Button
+              disabled={isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                onMutate(localFields);
+              }}
+              className="w-24"
+            >
+              {isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-4" />
+              ) : null}
+              Save
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
