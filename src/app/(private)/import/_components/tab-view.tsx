@@ -132,7 +132,12 @@ export const UploadView = ({ onJobCreated }: Props) => {
             `Column "${rule.columnName}" must be a STRING`
           );
         }
-        if (rule.dataType === "NUMBER" && isNaN(Number(value))) {
+        //Some fields with type NUMBER can have the value "unlimited" which is a string
+        if (
+          rule.dataType === "NUMBER" &&
+          isNaN(value) &&
+          value.toLowerCase() !== "unlimited"
+        ) {
           errors[rowIndex + 1].push(
             `Column"${rule.columnName}" must be a NUMBER`
           );
