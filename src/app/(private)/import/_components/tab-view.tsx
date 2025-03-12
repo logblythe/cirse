@@ -8,7 +8,13 @@ import { Portal } from "@/type/portal";
 import { capitalizeInitial } from "@/utils/capitalize-initials";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircleX, FileSpreadsheet, Loader2, UploadIcon } from "lucide-react";
+import {
+  CircleX,
+  DownloadCloud,
+  FileSpreadsheet,
+  Loader2,
+  UploadIcon,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import * as XLSX from "xlsx";
@@ -189,6 +195,26 @@ export const UploadView = ({ onJobCreated }: Props) => {
     uploadMutation.mutate();
   };
 
+  const downloadTemplate = () => {
+    let url = "";
+    let filename = "";
+    if (activeTab === "session") {
+      url =
+        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/3dae0f2a66b7407fb1daf4b101006f24";
+      filename = "session-template.xlsx";
+    } else {
+      url =
+        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/28aa749793a14fa4852b1735bc4cade6";
+      filename = "presentation-template.xlsx";
+    }
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Card className="w-full h-full">
       <CardContent className="text-sm py-4 space-y-8 flex flex-col">
@@ -274,7 +300,25 @@ export const UploadView = ({ onJobCreated }: Props) => {
             )}
           </div>
         ) : (
-          <FileUpload onDrop={handleDrop} />
+          <>
+            <FileUpload onDrop={handleDrop} />
+            <div className="flex flex-row justify-end ">
+              <div className="flex flex-col items-end">
+                <p className="text-gray-500">
+                  Get started by downloading the template
+                </p>
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="w-32"
+                  onClick={downloadTemplate}
+                >
+                  <DownloadCloud className="w-4 h-4 text-primary" />
+                  <span className="ml-2 font-normal text-xs">Download</span>
+                </Button>
+              </div>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>
