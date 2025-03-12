@@ -15,10 +15,10 @@ import { JobStatus } from "@/type/job";
 import { useQuery } from "@tanstack/react-query";
 import {
   CircleCheck,
-  CircleX,
   CloudDownload,
   Loader2,
   RefreshCcw,
+  TriangleAlert,
 } from "lucide-react";
 import React from "react";
 
@@ -34,7 +34,7 @@ const STATUS_ICON_MAP: Record<JobStatus, React.ReactElement> = {
   CREATED: <Loader2 className="w-6 h-6 animate-spin text-blue-600" />,
   IN_PROGRESS: <Loader2 className="w-6 h-6 animate-spin text-blue-600" />,
   COMPLETED: <CircleCheck className="w-6 h-6  text-green-600" />,
-  FAILED: <CircleX className="w-6 h-6 text-red-500" />,
+  FAILED: <TriangleAlert className="w-6 h-6 text-red-500" />,
 };
 
 export default function JobStatusDialog(props: DialogProps) {
@@ -94,7 +94,14 @@ export default function JobStatusDialog(props: DialogProps) {
                       {STATUS_ICON_MAP[status]}
                       <div className="flex flex-col flex-1 space-y-1">
                         <p className="text-sm font-semibold">{job.fileName}</p>
-                        <p className="text-sm text-gray-500">{job.status}</p>
+                        <div className="flex flex-row space-x-2 items-center">
+                          <p className="text-sm text-gray-500">{job.status}</p>
+                          {job.status === "FAILED" ? (
+                            <p className="text-xs text-red-500">
+                              {job.failedReason}
+                            </p>
+                          ) : null}
+                        </div>
                       </div>
                       {job.downloadable ? (
                         <Button variant="outline" size="icon">
