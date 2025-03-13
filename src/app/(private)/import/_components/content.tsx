@@ -129,26 +129,30 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
           </TabsContent>
         </Tabs>
       </div>
-      <FieldSelectionDialog
-        open={isSessionFieldsOpen}
-        onOpenChange={() => setIsSessionFieldOpen(false)}
-        scope="Session"
-        isPending={updateSessionFieldsMutation.isPending}
-        fields={portalDetails?.sessionFields ?? []}
-        onMutate={(fields) => {
-          updateSessionFieldsMutation.mutate({ fields });
-        }}
-      />
-      <FieldSelectionDialog
-        open={isPresentationFieldsOpen}
-        onOpenChange={() => setIsPresentationFieldOpen(false)}
-        scope="Presentation"
-        isPending={updatePresentationFieldsMutation.isPending}
-        fields={portalDetails?.presentationFields ?? []}
-        onMutate={(fields) => {
-          updatePresentationFieldsMutation.mutate({ fields });
-        }}
-      />
+      {isSessionFieldsOpen && (
+        <FieldSelectionDialog
+          open={isSessionFieldsOpen}
+          onOpenChange={() => setIsSessionFieldOpen(false)}
+          scope="Session"
+          isPending={updateSessionFieldsMutation.isPending}
+          fields={portalDetails?.sessionFields ?? []}
+          onMutate={(fields) => {
+            updateSessionFieldsMutation.mutate({ fields });
+          }}
+        />
+      )}
+      {isPresentationFieldsOpen && (
+        <FieldSelectionDialog
+          open={isPresentationFieldsOpen}
+          onOpenChange={() => setIsPresentationFieldOpen(false)}
+          scope="Presentation"
+          isPending={updatePresentationFieldsMutation.isPending}
+          fields={portalDetails?.presentationFields ?? []}
+          onMutate={(fields) => {
+            updatePresentationFieldsMutation.mutate({ fields });
+          }}
+        />
+      )}
       <JobStatusDialog
         open={isJobStatusDialogOpen}
         onOpenChange={() => setIsJobStatusDialogOpen(false)}
