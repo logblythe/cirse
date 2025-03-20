@@ -90,30 +90,25 @@ class ApiClient {
     return this.httpClient.request<EventType[]>(apiUrls.events.get);
   }
 
+  public async getAllEvents(): Promise<EventType[]> {
+    return this.httpClient.request<EventType[]>(
+      apiUrls.events.getEventDefinitions
+    );
+  }
+
+  public async importEvent(payload: EventType): Promise<void> {
+    return this.httpClient.request<void>(
+      apiUrls.events.importEvent,
+      "POST",
+      {},
+      payload
+    );
+  }
+
   public async deleteEventById(eventId: string): Promise<EventType[]> {
     return this.httpClient.request<EventType[]>(
       apiUrls.events.deleteEventById(eventId),
       "DELETE"
-    );
-  }
-
-  public async getSwoogoEvents(): Promise<
-    { eventId: string; eventName: string }[]
-  > {
-    return this.httpClient.request<{ eventId: string; eventName: string }[]>(
-      apiUrls.events.getSwoogoEvents
-    );
-  }
-
-  public async saveEvent(
-    payload: any,
-    method: "POST" | "PUT"
-  ): Promise<EventType> {
-    return this.httpClient.request(
-      apiUrls.events.saveEvent,
-      method,
-      {},
-      payload
     );
   }
 

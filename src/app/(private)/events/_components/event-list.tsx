@@ -48,7 +48,11 @@ const EventsList = () => {
           </h3>
           {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
         </div>
-        <Button onClick={(e) => {}}>
+        <Button
+          onClick={(e) => {
+            setIsOpen(!isOpen);
+          }}
+        >
           <Plus className="mr-2 h-4 w-4" /> Import
         </Button>
         <EventDialog

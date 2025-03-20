@@ -11,9 +11,9 @@ export const apiUrls = {
   },
   events: {
     get: "/events",
-    deleteEventById: (eventId: string) => `/event?id=${eventId}`,
-    getSwoogoEvents: "/event/swoogo",
-    saveEvent: "/event",
+    importEvent: "/events",
+    getEventDefinitions: "/events/definition",
+    deleteEventById: (eventId: string) => `/events/${eventId}`,
   },
   portalsManagement: {
     getEventPortals: (eventId: string) =>

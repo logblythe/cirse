@@ -38,7 +38,6 @@ const EventAction = ({ event }: { event: EventType }) => {
   return (
     <div className="flex flex-row space-x-4 items-center">
       <EventDialog
-        event={event}
         open={isOpen}
         onOpenChange={() => {
           setIsOpen(!isOpen);
