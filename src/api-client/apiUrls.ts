@@ -8,6 +8,7 @@ export const apiUrls = {
     delete: "/users",
     changePassword: "/users/change-password",
     toggleAccess: (userId: string) => `/users/${userId}/toggle-access`,
+    me: "/users/me",
   },
   events: {
     get: "/events",

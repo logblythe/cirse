@@ -1,8 +1,10 @@
+export type UserRole = "ADMIN" | "SU_ADMIN" | "PORTAL";
+
 export type User = {
   id: string;
   email: string;
   enabled: boolean;
-  roles: Array<"ADMIN" | "SU_ADMIN" | "PORTAL">;
+  roles: Array<UserRole>;
 };
 
 export type UserPayload = {

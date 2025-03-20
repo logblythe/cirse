@@ -2,20 +2,26 @@
 
 import useCookie from "@/hooks/useCookie";
 import { AuthUser } from "@/type/auth";
+import { UserRole } from "@/type/user";
 import { createContext, PropsWithChildren, useEffect, useState } from "react";
 
 interface TAuthContext {
   user: AuthUser | null;
   setUser: (user: AuthUser | null) => void;
+  roles: UserRole[];
+  setRoles(roles: UserRole[]): void;
 }
 
 export const AuthContext = createContext<TAuthContext>({
   user: null,
   setUser: () => {},
+  roles: [],
+  setRoles: (roles: UserRole[]) => {},
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [roles, setRoles] = useState<UserRole[]>([]);
 
   const { getCookie } = useCookie();
 
@@ -27,6 +33,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       if (existingUser) {
         try {
           setUser(JSON.parse(existingUser));
+          setRoles(JSON.parse(getCookie("roles") ?? ""));
         } catch (e) {
           console.error(e);
         }
@@ -36,7 +43,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, roles, setRoles }}>
       {children}
     </AuthContext.Provider>
   );

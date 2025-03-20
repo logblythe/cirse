@@ -2,6 +2,7 @@ import React from "react";
 
 import { useEventStore } from "@/store/event-store";
 import { CalendarCheck2, LandPlot, UserCog } from "lucide-react";
+import { useUser } from "./useUser";
 
 export type NavItem = {
   label: string;
@@ -11,6 +12,7 @@ export type NavItem = {
 
 const useNavItems = () => {
   const { selectedEventId } = useEventStore();
+  const { roles } = useUser();
 
   const defaultNavItems: NavItem[] = [
     {
@@ -25,49 +27,16 @@ const useNavItems = () => {
         : `/portals`,
       icon: <LandPlot className="w-6 h-6" />,
     },
-    // {
-    //   label: "Lead Retrieval",
-    //   href: selectedEventId
-    //     ? `/lead-retrieval?eventId=${selectedEventId}`
-    //     : `/lead-retrieval`,
-    //   icon: <Crown className="w-6 h-6" />,
-    // },
-    // {
-    //   label: "Import Portal",
-    //   href: selectedEventId
-    //     ? `/import-portal?eventId=${selectedEventId}`
-    //     : `/import-portal`,
-    //   icon: <FileDown className="w-6 h-6" />,
-    // },
-    // {
-    //   label: "Export Portal",
-    //   href: selectedEventId
-    //     ? `/export-portal?eventId=${selectedEventId}`
-    //     : `/export-portal`,
-    //   icon: <FileUp className="w-6 h-6" />,
-    // },
-    // {
-    //   label: "Agenda Sync",
-    //   href: selectedEventId
-    //     ? `/agenda-sync?eventId=${selectedEventId}`
-    //     : `/agenda-sync`,
-    //   icon: <Rss className="w-6 h-6" />,
-    // },
-    // {
-    //   label: "Group Allocation",
-    //   href: selectedEventId
-    //     ? `/group-allocation?eventId=${selectedEventId}`
-    //     : `/group-allocation`,
-    //   icon: <Users className="w-6 h-6" />,
-    // },
-    {
+  ];
+  if (roles.includes("ADMIN") || roles.includes("SU_ADMIN")) {
+    defaultNavItems.push({
       label: "User Management",
       href: selectedEventId
         ? `/user-management?eventId=${selectedEventId}`
         : `/user-management`,
       icon: <UserCog className="w-6 h-6" />,
-    },
-  ];
+    });
+  }
 
   return defaultNavItems;
 };

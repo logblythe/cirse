@@ -56,6 +56,10 @@ class ApiClient {
     );
   }
 
+  public async getMe(): Promise<User> {
+    return this.httpClient.request<User>(apiUrls.users.me);
+  }
+
   public async postUser(data: UserPayload): Promise<User> {
     return this.httpClient.request<User>(apiUrls.users.post, "POST", {}, data);
   }
