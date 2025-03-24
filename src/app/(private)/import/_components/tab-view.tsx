@@ -204,7 +204,7 @@ export const UploadView = ({ onJobCreated }: Props) => {
       filename = "session-template.xlsx";
     } else {
       url =
-        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/28aa749793a14fa4852b1735bc4cade6";
+        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/a3aa1e7710a84d1faf3904ebb53d18e6";
       filename = "presentation-template.xlsx";
     }
     const link = document.createElement("a");
