@@ -95,16 +95,23 @@ export default function JobStatusDialog(props: DialogProps) {
                       <div className="flex flex-col flex-1 space-y-1">
                         <p className="text-sm font-semibold">{job.fileName}</p>
                         <div className="flex flex-row space-x-2 items-center">
-                          <p className="text-sm text-gray-500">{job.status}</p>
-                          {job.status === "FAILED" ? (
+                          {job.status !== "FAILED" ? (
+                            <p className="text-sm text-gray-500">
+                              {job.status}
+                            </p>
+                          ) : (
                             <p className="text-xs text-red-500">
                               {job.failedReason}
                             </p>
-                          ) : null}
+                          )}
                         </div>
                       </div>
-                      {job.downloadable ? (
-                        <Button variant="outline" size="icon">
+                      {job.status === "COMPLETED" && job.downloadable ? (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="rounded-full bg-gray-200"
+                        >
                           <CloudDownload className="w-4 h-4" />
                         </Button>
                       ) : null}

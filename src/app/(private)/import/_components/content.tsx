@@ -1,6 +1,7 @@
 "use client";
 
 import ApiClient from "@/api-client/";
+import JobStatusDialog from "@/components/shared/job-status-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/components/ui/use-toast";
 import { Field } from "@/type/portal";
@@ -9,7 +10,6 @@ import { Cog, History, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import JobStatusDialog from "./job-status-dialog";
 import { UploadView } from "./tab-view";
 
 const FieldSelectionDialog = dynamic(() => import("./field-selection-dialog"), {
