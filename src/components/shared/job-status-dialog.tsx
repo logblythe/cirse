@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { JobStatus } from "@/type/job";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   CircleCheck,
   CloudDownload,
@@ -21,6 +21,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import React from "react";
+import { toast } from "../ui/use-toast";
 
 type DialogProps = {
   open: boolean;
@@ -43,6 +44,18 @@ export default function JobStatusDialog(props: DialogProps) {
   const jobsQuery = useQuery({
     queryKey: ["jobs", portalId],
     queryFn: () => apiClient.getJobs(portalId!),
+  });
+
+  const fileDownloadMutation = useMutation({
+    mutationFn: ({ jobId }: { jobId: string }) =>
+      apiClient.downloadExtractedFile(jobId),
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: error.message,
+      });
+    },
   });
 
   const handleModalClick = (
@@ -111,8 +124,21 @@ export default function JobStatusDialog(props: DialogProps) {
                           variant="outline"
                           size="icon"
                           className="rounded-full bg-gray-200"
+                          disabled={
+                            fileDownloadMutation.isPending &&
+                            fileDownloadMutation.variables?.jobId === job.jobId
+                          }
+                          onClick={() => {
+                            fileDownloadMutation.mutate({ jobId: job.jobId });
+                          }}
                         >
-                          <CloudDownload className="w-4 h-4" />
+                          {fileDownloadMutation.isPending &&
+                          fileDownloadMutation.variables?.jobId ===
+                            job.jobId ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <CloudDownload className="w-4 h-4" />
+                          )}
                         </Button>
                       ) : null}
                     </div>

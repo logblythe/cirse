@@ -2,7 +2,8 @@ import { AuthUser } from "@/type/auth";
 import { EventType } from "@/type/event-type";
 import { Job } from "@/type/job";
 import { PaginatedResponse } from "@/type/paginated-response";
-import { Field, Portal } from "@/type/portal";
+import { ExtractField, Field, Portal } from "@/type/portal";
+import { EXPORT_PURPOSE, IMPORT_PURPOSE } from "@/type/purpose";
 import { User, UserPayload } from "@/type/user";
 import { apiUrls } from "./apiUrls";
 import HttpClient from "./http-client";
@@ -170,13 +171,37 @@ class ApiClient {
     );
   }
 
+  public async updateExtractFields(
+    portalId: string,
+    scope: "SESSION_IMPORT" | "PRESENTATION_IMPORT",
+    extractFields: ExtractField[]
+  ): Promise<void> {
+    const params = new URLSearchParams();
+    params.set("scope", scope);
+    return this.httpClient.request<void>(
+      `${apiUrls.portalsManagement.updateExtractionFields(
+        portalId
+      )}?${params.toString()}`,
+      "POST",
+      {},
+      extractFields
+    );
+  }
+
+  public async createDataExtractionJob(
+    portalId: string,
+    purpose: EXPORT_PURPOSE,
+    formData: any
+  ): Promise<void> {
+    const params = new URLSearchParams();
+    params.set("purpose", purpose);
+    const url = apiUrls.files.jobs(portalId) + "?" + params.toString();
+    return this.httpClient.request<void>(String(url), "POST", {}, formData);
+  }
+
   public async uploadAndCreateJob(
     portalId: string,
-    purpose:
-      | "IMPORT_SESSIONS"
-      | "IMPORT_PRESENTATIONS"
-      | "EXPORT_SESSIONS"
-      | "EXPORT_PRESENTATIONS",
+    purpose: IMPORT_PURPOSE,
     file: File
   ): Promise<void> {
     const params = new URLSearchParams();
@@ -192,6 +217,10 @@ class ApiClient {
     return this.httpClient.request<PaginatedResponse<Job>>(
       apiUrls.files.jobs(portalId)
     );
+  }
+
+  public async downloadExtractedFile(jobId: string): Promise<void> {
+    return this.httpClient.downloadRequest(apiUrls.files.download(jobId));
   }
 }
 

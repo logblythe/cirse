@@ -27,10 +27,13 @@ export const apiUrls = {
       `/portals-mgmt/portals/${portalId}`,
     updateCustomFields: (portalId: string) =>
       `/portals-mgmt/portals/${portalId}/custom-fields`,
+    updateExtractionFields: (portalId: string) =>
+      `/portals-mgmt/portals/${portalId}/extract-fields`,
   },
   files: {
     uploadAndCreateJob: (portalId: string) =>
       `/files/portals/${portalId}/upload`,
     jobs: (portalId: string) => `/files/portals/${portalId}/jobs`,
+    download: (jobId: string) => `/files/jobs/${jobId}/download`,
   },
 };

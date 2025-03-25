@@ -59,6 +59,11 @@ const PortalsPage = () => {
         router.push(`/import?portalId=${portal.id}`);
         break;
       }
+
+      case "session/presentation export": {
+        router.push(`/export?portalId=${portal.id}`);
+        break;
+      }
     }
   };
 

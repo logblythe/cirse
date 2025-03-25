@@ -13,20 +13,40 @@ export interface ValidationRule {
   futureDate: boolean;
 }
 
+type SessionValidationConfig = {
+  id: string;
+  fileJobType: "IMPORT_SESSIONS";
+  rules: ValidationRule[];
+};
+
+type PresentationValidationConfig = {
+  id: string;
+  fileJobType: "IMPORT_PRESENTATIONS";
+  rules: ValidationRule[];
+};
+
+export type ExtractField = {
+  alias: string;
+  custom: boolean;
+  enabled: boolean;
+  name: string;
+};
+
+export type ExtractFilters = {
+  name: string;
+  values: string[];
+};
+
 export type Portal = {
   id: string;
   name: string;
   requiresOnlineUser: boolean;
   sessionFields: Field[];
+  sessionValidationConfig: SessionValidationConfig;
+  sessionExtractFields: ExtractField[];
+  sessionExtractFilters: ExtractFilters[];
   presentationFields: Field[];
-  sessionValidationConfig: {
-    id: string;
-    fileJobType: "IMPORT_SESSIONS";
-    rules: ValidationRule[];
-  };
-  presentationValidationConfig: {
-    id: string;
-    fileJobType: "IMPORT_PRESENTATIONS";
-    rules: ValidationRule[];
-  };
+  presentationValidationConfig: PresentationValidationConfig;
+  presentationExtractFields: ExtractField[];
+  presentationExtractFilters: ExtractFilters[];
 };

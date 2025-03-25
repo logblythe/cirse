@@ -117,4 +117,45 @@ export default class HttpClient {
     }
     return await response.json();
   }
+
+  // Download request method
+  public async downloadRequest(
+    endpoint: string,
+    method: string = "GET",
+    headers: Record<string, string> = {}
+  ): Promise<void> {
+    const { token } = this.getUserInfo();
+
+    const defaultHeaders: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      ...headers,
+    };
+
+    const options: RequestInit = {
+      method,
+      headers: defaultHeaders,
+    };
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, options);
+
+    if (!response.ok) {
+      const responseJson = await response.json();
+      throw new Error(responseJson.message || "Download failed");
+    }
+
+    // Handle the response as a Blob for downloading
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary link to trigger the download
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "extraction.xlsx"; // Optionally, set the file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Revoke the URL to free memory
+    URL.revokeObjectURL(url);
+  }
 }
