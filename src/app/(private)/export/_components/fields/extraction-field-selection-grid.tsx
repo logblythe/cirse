@@ -27,6 +27,7 @@ export const ExtractionFieldSelectionGrid = (props: Props) => {
           {localFields?.map((field) => {
             return (
               <FieldCheckbox
+                disabled={field.custom}
                 key={`${field.name}-${field.alias}-${field.enabled}`}
                 label={field.name}
                 checked={field.enabled}
