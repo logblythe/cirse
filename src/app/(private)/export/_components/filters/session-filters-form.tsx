@@ -21,7 +21,6 @@ import { z } from "zod";
 
 const FormSchema = z.object({
   fromDate: z.string(),
-  toDate: z.string(),
 });
 
 type FormValues = z.infer<typeof FormSchema>;
@@ -36,7 +35,6 @@ export const SessionFiltersForm = (props: Props) => {
   const form = useForm<FormValues>({
     defaultValues: {
       fromDate: "",
-      toDate: format(new Date(), "yyyy-MM-dd"),
     },
   });
 
@@ -49,52 +47,6 @@ export const SessionFiltersForm = (props: Props) => {
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>From</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        <span>{format(field.value, "PPP")}</span>
-                      ) : (
-                        <span>Pick a date</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent align="start">
-                  <Calendar
-                    className="w-auto pt-2 bg-white shadow-lg rounded-lg border border-gray-200"
-                    mode="single"
-                    selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={(value) => {
-                      value
-                        ? field.onChange(format(value, "yyyy-MM-dd"))
-                        : field.onChange(value);
-                    }}
-                    disabled={(date) =>
-                      date > new Date() || date < new Date("1900-01-01")
-                    }
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="toDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>To</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
