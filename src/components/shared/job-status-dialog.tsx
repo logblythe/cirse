@@ -27,6 +27,8 @@ type DialogProps = {
   open: boolean;
   onOpenChange: () => void;
   portalId: string;
+  title: string;
+  description: string;
 };
 
 const apiClient = new ApiClient();
@@ -39,7 +41,7 @@ const STATUS_ICON_MAP: Record<JobStatus, React.ReactElement> = {
 };
 
 export default function JobStatusDialog(props: DialogProps) {
-  const { open, onOpenChange, portalId } = props;
+  const { open, onOpenChange, portalId, title, description } = props;
 
   const jobsQuery = useQuery({
     queryKey: ["jobs", portalId],
@@ -71,11 +73,8 @@ export default function JobStatusDialog(props: DialogProps) {
         onClick={handleModalClick}
       >
         <DialogHeader>
-          <DialogTitle>Imported files</DialogTitle>
-          <DialogDescription>
-            Imported files are processed in the background. You can check the
-            status of your imports here.
-          </DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-row justify-end">
           <Button

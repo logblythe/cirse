@@ -157,6 +157,9 @@ const ImportContent = ({ portalId }: { portalId: string }) => {
         open={isJobStatusDialogOpen}
         onOpenChange={() => setIsJobStatusDialogOpen(false)}
         portalId={portalId}
+        title="Imported files"
+        description="Imported files are processed in the background. You can check the
+            status of your imports here."
       />
     </>
   );
