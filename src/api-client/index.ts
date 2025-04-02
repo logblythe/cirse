@@ -213,10 +213,16 @@ class ApiClient {
     return this.httpClient.multiPartRequest<void>(url, "POST", {}, formData);
   }
 
-  public async getJobs(portalId: string): Promise<PaginatedResponse<Job>> {
-    return this.httpClient.request<PaginatedResponse<Job>>(
-      apiUrls.files.jobs(portalId)
-    );
+  public async getJobs(
+    portalId: string,
+    page: number = 0,
+    size: number = 50
+  ): Promise<PaginatedResponse<Job>> {
+    const params = new URLSearchParams();
+    params.set("page", String(page));
+    params.set("size", String(size));
+    const url = apiUrls.files.jobs(portalId) + "?" + params.toString();
+    return this.httpClient.request<PaginatedResponse<Job>>(url);
   }
 
   public async downloadExtractedFile(jobId: string): Promise<void> {

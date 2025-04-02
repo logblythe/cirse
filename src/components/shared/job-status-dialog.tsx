@@ -11,8 +11,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import { JobStatus } from "@/type/job";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { format } from "date-fns";
 import {
   CircleCheck,
   CloudDownload,
@@ -20,7 +22,7 @@ import {
   RefreshCcw,
   TriangleAlert,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { toast } from "../ui/use-toast";
 
 type DialogProps = {
@@ -43,10 +45,38 @@ const STATUS_ICON_MAP: Record<JobStatus, React.ReactElement> = {
 export default function JobStatusDialog(props: DialogProps) {
   const { open, onOpenChange, portalId, title, description } = props;
 
-  const jobsQuery = useQuery({
+  const observerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const jobsQuery = useInfiniteQuery({
     queryKey: ["jobs", portalId],
-    queryFn: () => apiClient.getJobs(portalId!),
+    queryFn: ({ pageParam }) => apiClient.getJobs(portalId!, pageParam),
+    getNextPageParam: (response) => {
+      const { currentPage, totalPages } = response;
+      return currentPage + 1 < totalPages ? currentPage + 1 : undefined;
+    },
+    initialPageParam: 0,
+    enabled: open,
   });
+
+  useEffect(() => {
+    if (!observerRef.current) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && jobsQuery.hasNextPage) {
+          jobsQuery.fetchNextPage();
+        }
+      },
+      { threshold: 1, rootMargin: "100px" }
+    );
+
+    observer.observe(observerRef.current);
+
+    return () => observer.disconnect();
+  }, [observerRef.current, jobsQuery.hasNextPage]);
 
   const fileDownloadMutation = useMutation({
     mutationFn: ({ jobId }: { jobId: string }) =>
@@ -79,31 +109,39 @@ export default function JobStatusDialog(props: DialogProps) {
         <div className="flex flex-row justify-end">
           <Button
             onClick={() => {
+              containerRef.current?.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
               jobsQuery.refetch();
             }}
             className="w-32"
             variant={"secondary"}
+            disabled={jobsQuery.isRefetching}
           >
-            <RefreshCcw className="w-4 h-4 mr-4" />
+            <RefreshCcw
+              className={cn("w-4 h-4 mr-4", {
+                "animate-spin": jobsQuery.isRefetching,
+              })}
+            />
             <span>Refresh</span>
           </Button>
         </div>
-        <div className="flex-1 overflow-auto">
-          {jobsQuery.isLoading || jobsQuery.isFetching ? (
+        <div className="flex-1 overflow-auto" ref={containerRef}>
+          {jobsQuery.isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
           ) : (
             <div className="flex flex-col space-y-2">
-              {jobsQuery.data?.data.map((job) => {
-                const status = job.status;
-                return (
+              {jobsQuery.data?.pages.map((page) =>
+                page.data.map((job) => (
                   <Card
                     key={job.jobId}
-                    className="flex flex-row justify-between items-center p-4 bg-gray-100 rounded-lg"
+                    className="flex flex-row justify-between items-center px-4 py-2 bg-gray-100 rounded-lg"
                   >
                     <div className="flex flex-row space-x-4 items-center w-full">
-                      {STATUS_ICON_MAP[status]}
+                      {STATUS_ICON_MAP[job.status]}
                       <div className="flex flex-col flex-1 space-y-1">
                         <p className="text-sm font-semibold">{job.fileName}</p>
                         <div className="flex flex-row space-x-2 items-center">
@@ -118,32 +156,43 @@ export default function JobStatusDialog(props: DialogProps) {
                           )}
                         </div>
                       </div>
-                      {job.status === "COMPLETED" && job.downloadable ? (
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="rounded-full bg-gray-200"
-                          disabled={
-                            fileDownloadMutation.isPending &&
-                            fileDownloadMutation.variables?.jobId === job.jobId
-                          }
-                          onClick={() => {
-                            fileDownloadMutation.mutate({ jobId: job.jobId });
-                          }}
-                        >
-                          {fileDownloadMutation.isPending &&
-                          fileDownloadMutation.variables?.jobId ===
-                            job.jobId ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <CloudDownload className="w-4 h-4" />
-                          )}
-                        </Button>
-                      ) : null}
+                      <div className="flex flex-col items-end space-y-2">
+                        {job.status === "COMPLETED" && job.downloadable ? (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="rounded-full bg-gray-200"
+                            disabled={
+                              fileDownloadMutation.isPending &&
+                              fileDownloadMutation.variables?.jobId ===
+                                job.jobId
+                            }
+                            onClick={() => {
+                              fileDownloadMutation.mutate({ jobId: job.jobId });
+                            }}
+                          >
+                            {fileDownloadMutation.isPending &&
+                            fileDownloadMutation.variables?.jobId ===
+                              job.jobId ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <CloudDownload className="w-4 h-4" />
+                            )}
+                          </Button>
+                        ) : null}
+                        <p className="text-xs text-gray-500">
+                          {format(job.createdAt, "MM/dd/yyyy")}
+                        </p>
+                      </div>
                     </div>
                   </Card>
-                );
-              })}
+                ))
+              )}
+              {jobsQuery.hasNextPage ? (
+                <div ref={observerRef}>
+                  <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                </div>
+              ) : null}
             </div>
           )}
         </div>
