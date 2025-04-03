@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/components/ui/use-toast";
+import {
+  PRESENTATION_TEMPLATE_FILE_NAME,
+  PRESENTATION_TEMPLATE_URL,
+  SESSION_TEMPLATE_FILE_NAME,
+  SESSION_TEMPLATE_URL,
+} from "@/consts/urls";
 import { Portal } from "@/type/portal";
 import { capitalizeInitial } from "@/utils/capitalize-initials";
 
@@ -199,13 +205,11 @@ export const UploadView = ({ onJobCreated }: Props) => {
     let url = "";
     let filename = "";
     if (activeTab === "session") {
-      url =
-        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/3dae0f2a66b7407fb1daf4b101006f24";
-      filename = "session-template.xlsx";
+      url = SESSION_TEMPLATE_URL;
+      filename = SESSION_TEMPLATE_FILE_NAME;
     } else {
-      url =
-        "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/a3aa1e7710a84d1faf3904ebb53d18e6";
-      filename = "presentation-template.xlsx";
+      url = PRESENTATION_TEMPLATE_URL;
+      filename = PRESENTATION_TEMPLATE_FILE_NAME;
     }
     const link = document.createElement("a");
     link.href = url;
