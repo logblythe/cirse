@@ -16,7 +16,7 @@ const UserList = () => {
 
   const usersQuery = useQuery({
     queryKey: ["users", "admin"],
-    queryFn: () => apiClient.getUsers({ page: 1, size: 10 }),
+    queryFn: () => apiClient.getUsers({ page: 0, size: 10 }),
   });
 
   const users = usersQuery.data?.data ?? [];

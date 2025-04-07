@@ -16,7 +16,7 @@ export default async function EventsPage() {
 
   await queryClient.prefetchQuery({
     queryKey: ["users", "admin"],
-    queryFn: () => apiClient.getUsers({ page: 1, size: 10 }),
+    queryFn: () => apiClient.getUsers({ page: 0, size: 10 }),
   });
 
   return (

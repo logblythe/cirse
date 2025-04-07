@@ -44,13 +44,13 @@ class ApiClient {
     page: number;
     size: number;
     portalId?: string;
-    roleFilter: UserRole;
+    roleFilter?: UserRole;
   }): Promise<PaginatedResponse<User>> {
     const { page, size, portalId, roleFilter } = data;
     const params = new URLSearchParams();
 
-    if (page) params.set("page", String(page));
-    if (size) params.set("size", String(size));
+    params.set("page", String(page));
+    params.set("size", String(size));
     if (portalId) params.set("portalId", portalId);
     if (roleFilter) params.set("roleFilter", roleFilter);
 

@@ -33,7 +33,7 @@ const LeadRetrievalContent = () => {
     queryKey: ["users", portalId],
     queryFn: () =>
       apiClient.getUsers({
-        page: 1,
+        page: 0,
         size: 10,
         portalId: portalId ?? "",
         roleFilter: "PORTAL",
