@@ -24,7 +24,13 @@ import { z } from "zod";
 
 const BaseUserSchema = z.object({
   email: z.string().min(1, "Required"),
-  password: z.string().min(1, "Required"),
+  password: z
+    .string()
+    .min(1, "Required")
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "Password must have at least one uppercase letter, one number, and one special character"
+    ),
 });
 
 const AdminUserSchema = BaseUserSchema.extend({
@@ -116,7 +122,9 @@ export default function CreateUserDialog(props: DialogProps) {
         <DialogHeader>
           <DialogTitle>{user ? "Update password" : "Create User"}</DialogTitle>
           <DialogDescription>
-            To update password, please enter new password and save.
+            {user
+              ? "To update password, please enter new password and save."
+              : "Enter the username and password for the new user."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

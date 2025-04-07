@@ -27,7 +27,13 @@ const BaseUserSchema = z.object({
 
 const formSchema = BaseUserSchema.extend({
   role: z.enum(["PORTAL"]),
-  portalId: z.string().min(1, "Required"),
+  portalId: z
+    .string()
+    .min(1, "Required")
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "Password must have at least one uppercase letter, one number, and one special character"
+    ),
 });
 
 const apiClient = new ApiClient();
@@ -78,7 +84,7 @@ export default function CreatePortalUserDialog(props: DialogProps) {
         <DialogHeader>
           <DialogTitle>{"Create Portal User"}</DialogTitle>
           <DialogDescription>
-            To update password, please enter new password and save.
+            Enter the username and password for the new portal user.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

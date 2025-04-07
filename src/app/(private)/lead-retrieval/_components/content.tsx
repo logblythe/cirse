@@ -32,7 +32,12 @@ const LeadRetrievalContent = () => {
   const usersQuery = useQuery({
     queryKey: ["users", portalId],
     queryFn: () =>
-      apiClient.getUsers({ page: 1, size: 10, portalId: portalId ?? "" }),
+      apiClient.getUsers({
+        page: 1,
+        size: 10,
+        portalId: portalId ?? "",
+        roleFilter: "PORTAL",
+      }),
     enabled: Boolean(portalDetails?.requiresOnlineUser),
   });
 

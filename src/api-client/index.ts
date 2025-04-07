@@ -4,7 +4,7 @@ import { Job } from "@/type/job";
 import { PaginatedResponse } from "@/type/paginated-response";
 import { ExtractField, Field, Portal } from "@/type/portal";
 import { EXPORT_PURPOSE, IMPORT_PURPOSE } from "@/type/purpose";
-import { User, UserPayload } from "@/type/user";
+import { User, UserPayload, UserRole } from "@/type/user";
 import { apiUrls } from "./apiUrls";
 import HttpClient from "./http-client";
 
@@ -44,13 +44,15 @@ class ApiClient {
     page: number;
     size: number;
     portalId?: string;
+    roleFilter: UserRole;
   }): Promise<PaginatedResponse<User>> {
-    const { page, size, portalId } = data;
+    const { page, size, portalId, roleFilter } = data;
     const params = new URLSearchParams();
 
     if (page) params.set("page", String(page));
     if (size) params.set("size", String(size));
     if (portalId) params.set("portalId", portalId);
+    if (roleFilter) params.set("roleFilter", roleFilter);
 
     return this.httpClient.request<PaginatedResponse<User>>(
       `${apiUrls.users.get}?${params.toString()}`
