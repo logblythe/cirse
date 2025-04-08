@@ -22,18 +22,18 @@ import { z } from "zod";
 
 const BaseUserSchema = z.object({
   email: z.string().min(1, "Required"),
-  password: z.string().min(1, "Required"),
-});
-
-const formSchema = BaseUserSchema.extend({
-  role: z.enum(["PORTAL"]),
-  portalId: z
+  password: z
     .string()
     .min(1, "Required")
     .regex(
       /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
       "Password must have at least one uppercase letter, one number, and one special character"
     ),
+});
+
+const formSchema = BaseUserSchema.extend({
+  role: z.enum(["PORTAL"]),
+  portalId: z.string().min(1, "Required"),
 });
 
 const apiClient = new ApiClient();
@@ -55,7 +55,7 @@ export default function CreatePortalUserDialog(props: DialogProps) {
     mutationFn: ({ data }: { data: z.infer<typeof formSchema> }) =>
       apiClient.postUser(data),
     onError: (error) => {
-      showErrorToast();
+      showErrorToast(error.message);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
