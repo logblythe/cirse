@@ -4,4 +4,4 @@ export const PRESENTATION_TEMPLATE_URL =
 
 export const SESSION_TEMPLATE_FILE_NAME = "session_template.xlsx";
 export const SESSION_TEMPLATE_URL =
-  "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/8f0814b6ea704855b759537e5c38164f";
+  "https://airdrive.eventsair.com/eventsairwesteuprod/production-cirse-public/fd8012a6cae94d4b9d1e0c0b4e2f5fed";
