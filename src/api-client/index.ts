@@ -9,10 +9,7 @@ import { apiUrls } from "./apiUrls";
 import HttpClient from "./http-client";
 
 class ApiClient {
-  private baseUrl: string =
-    "https://cirse-portals-83faa4ddee7c.herokuapp.com/api/v1";
-
-  // private baseUrl: string = "http://localhost:8080";
+  private baseUrl: string = process.env.NEXT_PUBLIC_API_URL || "";
 
   private httpClient: HttpClient;
 
