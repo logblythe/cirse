@@ -7,10 +7,11 @@ export type Field = {
 
 export interface ValidationRule {
   columnName: string;
-  dataType: "STRING" | "NUMBER";
+  dataType: "STRING" | "NUMBER" | "CHECKBOX" | "URL";
   required: boolean;
   pastDate: boolean;
   futureDate: boolean;
+  dateFormat?: string;
 }
 
 type SessionValidationConfig = {

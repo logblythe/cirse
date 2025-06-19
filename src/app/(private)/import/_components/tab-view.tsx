@@ -12,6 +12,7 @@ import {
 } from "@/consts/urls";
 import { Portal } from "@/type/portal";
 import { capitalizeInitial } from "@/utils/capitalize-initials";
+import { getTimeRegex } from "@/utils/get-time-regex";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -139,20 +140,50 @@ export const UploadView = ({ onJobCreated }: Props) => {
         }
 
         // Data Type Check
-        if (rule.dataType === "STRING" && typeof value !== "string") {
-          errors[rowIndex + 1].push(
-            `Column "${rule.columnName}" must be a STRING`
-          );
+        if (rule.dataType === "STRING" && value) {
+          if (typeof value !== "string") {
+            errors[rowIndex + 1].push(
+              `Column "${rule.columnName}" must be a STRING`
+            );
+          }
         }
+
         //Some fields with type NUMBER can have the value "unlimited" which is a string
-        if (
-          rule.dataType === "NUMBER" &&
-          isNaN(value) &&
-          value.toLowerCase() !== "unlimited"
-        ) {
-          errors[rowIndex + 1].push(
-            `Column"${rule.columnName}" must be a NUMBER`
-          );
+        if (rule.dataType === "NUMBER" && value) {
+          if (isNaN(value) && value.toLowerCase() !== "unlimited") {
+            errors[rowIndex + 1].push(
+              `Column"${rule.columnName}" must be a NUMBER`
+            );
+          }
+        }
+
+        //Checkbox Validation
+        if (rule.dataType === "CHECKBOX" && value) {
+          if (typeof value !== "boolean") {
+            errors[rowIndex + 1].push(
+              `Column "${rule.columnName}" must be a BOOLEAN`
+            );
+          }
+        }
+
+        //URL Validation
+        if (rule.dataType === "URL" && value) {
+          const urlPattern = /^(http|https):\/\/[^ "]+$/;
+          if (!urlPattern.test(value)) {
+            errors[rowIndex + 1].push(
+              `Column "${rule.columnName}" must be a valid URL`
+            );
+          }
+        }
+
+        //Time format validations
+        if (rule.dateFormat && value) {
+          const dateFormatRegex = getTimeRegex(rule.dateFormat);
+          if (!dateFormatRegex.test(value)) {
+            errors[rowIndex + 1].push(
+              `Column "${rule.columnName}" must match the format ${rule.dateFormat}`
+            );
+          }
         }
 
         // Date Validations
