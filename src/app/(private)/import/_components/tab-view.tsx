@@ -12,7 +12,7 @@ import {
 } from "@/consts/urls";
 import { Portal } from "@/type/portal";
 import { capitalizeInitial } from "@/utils/capitalize-initials";
-import { getTimeRegex } from "@/utils/get-time-regex";
+import { validateData } from "@/utils/validate-data";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -103,123 +103,12 @@ export const UploadView = ({ onJobCreated }: Props) => {
         }, {} as RowData)
       );
       setData(lowerCaseJsonData);
-      validateData(lowerCaseJsonData);
+      const validationRules =
+        activeTab === "session"
+          ? portalDetails?.sessionValidationConfig?.rules ?? []
+          : portalDetails?.presentationValidationConfig?.rules ?? [];
+      validateData(lowerCaseJsonData, validationRules, setErrors);
     };
-  };
-
-  const validateData = (jsonData: any[]) => {
-    const fileColumns = Object.keys(jsonData[0] || {});
-
-    const validationRules =
-      activeTab === "session"
-        ? portalDetails?.sessionValidationConfig?.rules ?? []
-        : portalDetails?.presentationValidationConfig?.rules ?? [];
-
-    if (!validationRules) {
-      return;
-    }
-
-    // Validate Columns
-    validationRules.forEach((rule) => {
-      if (!fileColumns.includes(rule.columnName)) {
-        errors[0] = errors[0] || [];
-        errors[0].push(`Missing required column: ${rule.columnName}`);
-      }
-    });
-
-    // Validate each row
-    jsonData.forEach((row, rowIndex) => {
-      validationRules.forEach((rule) => {
-        const value = row[rule.columnName];
-
-        // Initialize error array for this row
-        if (!errors[rowIndex + 1]) errors[rowIndex + 1] = [];
-
-        if (rule.required && !value) {
-          errors[rowIndex + 1].push(`Column "${rule.columnName}" is required`);
-        }
-
-        // Data Type Check
-        if (rule.dataType === "STRING" && value) {
-          if (typeof value !== "string") {
-            errors[rowIndex + 1].push(
-              `Column "${rule.columnName}" must be a STRING`
-            );
-          }
-        }
-
-        //Some fields with type NUMBER can have the value "unlimited" which is a string
-        if (rule.dataType === "NUMBER" && value) {
-          if (isNaN(value) && value.toLowerCase() !== "unlimited") {
-            errors[rowIndex + 1].push(
-              `Column"${rule.columnName}" must be a NUMBER`
-            );
-          }
-        }
-
-        //Checkbox Validation
-        if (rule.dataType === "CHECKBOX" && value) {
-          if (typeof value !== "boolean") {
-            errors[rowIndex + 1].push(
-              `Column "${rule.columnName}" must be a BOOLEAN`
-            );
-          }
-        }
-
-        //URL Validation
-        if (rule.dataType === "URL" && value) {
-          const urlPattern = /^(http|https):\/\/[^ "]+$/;
-          if (!urlPattern.test(value)) {
-            errors[rowIndex + 1].push(
-              `Column "${rule.columnName}" must be a valid URL`
-            );
-          }
-        }
-
-        //Time format validations
-        if (rule.dateFormat && value) {
-          const dateFormatRegex = getTimeRegex(rule.dateFormat);
-          if (!dateFormatRegex.test(value)) {
-            errors[rowIndex + 1].push(
-              `Column "${rule.columnName}" must match the format ${rule.dateFormat}`
-            );
-          }
-        }
-
-        // Date Validations
-        if (rule.pastDate || rule.futureDate) {
-          const dateValue = new Date(value);
-          if (isNaN(dateValue.getTime())) {
-            errors[rowIndex + 1].push(
-              `Column "${rule.columnName}" must be a valid DATE`
-            );
-          } else {
-            const today = new Date();
-            if (rule.pastDate && dateValue >= today) {
-              errors[rowIndex + 1].push(
-                `Column "${rule.columnName}" must be a past date`
-              );
-            }
-            if (rule.futureDate && dateValue <= today) {
-              errors[rowIndex + 1].push(
-                `Column "${rule.columnName}" must be a future date`
-              );
-            }
-          }
-        }
-
-        // Remove empty error arrays
-        if (errors[rowIndex + 1]?.length === 0) {
-          delete errors[rowIndex + 1];
-        }
-      });
-    });
-
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-    } else {
-      setErrors({});
-    }
   };
 
   const onRemoveFileClick = () => {
