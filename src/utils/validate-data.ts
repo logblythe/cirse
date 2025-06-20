@@ -19,14 +19,6 @@ export function validateData(
     return;
   }
 
-  // Validate Columns
-  validationRules.forEach((rule: any) => {
-    if (!fileColumns.includes(rule.columnName)) {
-      errors[0] = errors[0] || [];
-      errors[0].push(`Missing required column: ${rule.columnName}`);
-    }
-  });
-
   // Validate each row
   jsonData.forEach((row, rowIndex) => {
     validationRules.forEach((rule: any) => {
