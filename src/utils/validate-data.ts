@@ -31,28 +31,30 @@ export function validateData(
         errors[rowIndex + 1].push(`Column "${rule.columnName}" is required`);
       }
 
-      switch (rule.dataType) {
-        case "STRING":
-        case "TEXT":
-          validateString(value, rule, errors[rowIndex + 1]);
-          validateDateFormat(value, rule, errors[rowIndex + 1]);
-          break;
-        case "NUMBER":
-        case "AMOUNT":
-          validateNumber(value, rule, errors[rowIndex + 1]);
-          break;
-        case "CHECKBOX":
-          validateCheckbox(value, rule, errors[rowIndex + 1]);
-          break;
-        case "URL":
-          validateURL(value, rule, errors[rowIndex + 1]);
-          break;
-        case "TAG":
-          break;
-        default:
-          errors[rowIndex + 1].push(
-            `Unknown data type "${rule.dataType}" for column "${rule.columnName}"`
-          );
+      if (value) {
+        switch (rule.dataType) {
+          case "STRING":
+          case "TEXT":
+            validateString(value, rule, errors[rowIndex + 1]);
+            validateDateFormat(value, rule, errors[rowIndex + 1]);
+            break;
+          case "NUMBER":
+          case "AMOUNT":
+            validateNumber(value, rule, errors[rowIndex + 1]);
+            break;
+          case "CHECKBOX":
+            validateCheckbox(value, rule, errors[rowIndex + 1]);
+            break;
+          case "URL":
+            validateURL(value, rule, errors[rowIndex + 1]);
+            break;
+          case "TAG":
+            break;
+          default:
+            errors[rowIndex + 1].push(
+              `Unknown data type "${rule.dataType}" for column "${rule.columnName}"`
+            );
+        }
       }
 
       // Remove empty error arrays
