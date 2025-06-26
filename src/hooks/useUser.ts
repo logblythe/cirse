@@ -7,7 +7,8 @@ import useCookie from "./useCookie";
 const apiClient = new ApiClient();
 
 export const useUser = () => {
-  const { user, setUser, roles, setRoles } = useContext(AuthContext);
+  const { user, setUser, roles, setRoles, setUsername, username } =
+    useContext(AuthContext);
   const { setCookie, removeCookie } = useCookie();
 
   const addUser = async (user: AuthUser) => {
@@ -16,16 +17,20 @@ export const useUser = () => {
     localStorage.setItem("user", JSON.stringify(user));
     const myDetails = await apiClient.getMe();
     setRoles(myDetails.roles);
+    setUsername(myDetails.email);
     setCookie("roles", JSON.stringify(myDetails.roles));
+    setCookie("username", myDetails.email);
     localStorage.setItem("roles", JSON.stringify(myDetails.roles));
   };
 
   const removeUser = () => {
     setUser(null);
     removeCookie("user");
+    removeCookie("roles");
+    removeCookie("username");
     localStorage.removeItem("user");
     localStorage.removeItem;
   };
 
-  return { user, addUser, removeUser, roles };
+  return { user, addUser, removeUser, roles, username };
 };

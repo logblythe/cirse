@@ -7,6 +7,7 @@ import { ChevronLeftCircleIcon, ChevronRightCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavItem, defaultNavItems } from "./defaultNavItems";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 type Props = {
   collapsed: boolean;
@@ -24,7 +25,7 @@ const Sidebar = ({
   const pathname = usePathname();
   const navigations = useNavItems();
 
-  const { removeUser, user } = useUser();
+  const { removeUser, username } = useUser();
 
   const Icon = collapsed ? ChevronRightCircleIcon : ChevronLeftCircleIcon;
 
@@ -104,19 +105,15 @@ const Sidebar = ({
           })}
         >
           <div className="flex gap-4 items-center h-11 overflow-hidden">
-            <img
-              src={
-                "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              }
-              height={36}
-              width={36}
-              alt="profile image"
-              className="rounded-full"
-            />
+            <Avatar className="bg-red-200 ">
+              <AvatarFallback className="bg-gray-300 text-indigo-900 font-bold">
+                {username ? username.charAt(0).toUpperCase() : "U"}
+              </AvatarFallback>
+            </Avatar>
 
             {!collapsed && (
               <div className="flex flex-col ">
-                <span className="text-indigo-50 my-0">John Doe</span>
+                <span className="text-indigo-50 my-0">{username}</span>
                 <Link
                   href="/"
                   className="text-indigo-200 text-sm"

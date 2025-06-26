@@ -28,7 +28,7 @@ const useNavItems = () => {
       icon: <LandPlot className="w-6 h-6" />,
     },
   ];
-  if (roles.includes("ADMIN") || roles.includes("SU_ADMIN")) {
+  if (roles.includes("SU_ADMIN")) {
     defaultNavItems.push({
       label: "User Management",
       href: selectedEventId
