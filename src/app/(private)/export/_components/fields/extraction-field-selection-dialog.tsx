@@ -77,7 +77,7 @@ export default function ExtractionFieldSelectionDialog(props: DialogProps) {
                   setLocalFields((prev) =>
                     prev.map((field) => ({
                       ...field,
-                      enabled: field.custom ? false : true,
+                      enabled: true,
                     }))
                   );
                 } else {
