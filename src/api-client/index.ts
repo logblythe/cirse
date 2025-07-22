@@ -153,6 +153,13 @@ class ApiClient {
     );
   }
 
+  public async refreshPortal(portalId: string): Promise<void> {
+    return this.httpClient.request<void>(
+      apiUrls.portalsManagement.refreshPortal(portalId),
+      "GET"
+    );
+  }
+
   public async updateCustomFields(
     portalId: string,
     scope: "SESSION_IMPORT" | "PRESENTATION_IMPORT",

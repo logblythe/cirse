@@ -12,7 +12,7 @@ import { useNetworkErrorToast } from "@/hooks/useNetworkError";
 import { useEventStore } from "@/store/event-store";
 import { Portal } from "@/type/portal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, RefreshCcw, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import AddPortalTemplateDialog from "./add-portal-template-dialog";
@@ -46,6 +46,16 @@ const PortalsPage = () => {
     },
   });
 
+  const refreshPortalMutation = useMutation({
+    mutationFn: (portalId: string) => apiClient.refreshPortal(portalId),
+    onError: () => showErrorToast(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["events", selectedEventId, "portals"],
+      });
+    },
+  });
+
   const portals = eventPortalQuery.data;
 
   const handleRowClick = (portal: Portal) => {
@@ -69,6 +79,10 @@ const PortalsPage = () => {
 
   const handleRemovePortal = (portalId: string) => {
     removePortalMutation.mutate(portalId);
+  };
+
+  const handleRefreshPortal = (portalId: string) => {
+    refreshPortalMutation.mutate(portalId);
   };
 
   return (
@@ -104,21 +118,49 @@ const PortalsPage = () => {
                     >
                       {portal.name}
                     </p>
-                    <Button
-                      size={"icon"}
-                      variant={"outline"}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemovePortal(portal.id);
-                      }}
-                      disabled={removePortalMutation.isPending}
-                    >
-                      {removePortalMutation.isPending ? (
-                        <Loader2 className="w-6 h-6 animate-spin" />
-                      ) : (
-                        <Trash2 className="w-6 h-6 text-red-400" />
-                      )}
-                    </Button>
+                    <div className="flex flex-row space-x-2">
+                      {portal.name.toLowerCase().includes("import") ||
+                      portal.name.toLowerCase().includes("export") ? (
+                        <Button
+                          size={"icon"}
+                          variant={"outline"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRefreshPortal(portal.id);
+                          }}
+                          disabled={
+                            refreshPortalMutation.isPending &&
+                            refreshPortalMutation.variables === portal.id
+                          }
+                        >
+                          {refreshPortalMutation.isPending &&
+                          refreshPortalMutation.variables === portal.id ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <RefreshCcw className="w-4 h-4 text-blue-400" />
+                          )}
+                        </Button>
+                      ) : null}
+                      <Button
+                        size={"icon"}
+                        variant={"outline"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemovePortal(portal.id);
+                        }}
+                        disabled={
+                          removePortalMutation.isPending &&
+                          removePortalMutation.variables === portal.id
+                        }
+                      >
+                        {removePortalMutation.isPending &&
+                        removePortalMutation.variables === portal.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4 text-red-400" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </CardTitle>
                 <CardDescription>{portal.id}</CardDescription>

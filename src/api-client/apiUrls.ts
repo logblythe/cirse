@@ -29,6 +29,9 @@ export const apiUrls = {
       `/portals-mgmt/portals/${portalId}/custom-fields`,
     updateExtractionFields: (portalId: string) =>
       `/portals-mgmt/portals/${portalId}/extract-fields`,
+    refreshPortal: (portalId: string) => {
+      return `/portals-mgmt/portals/${portalId}/refresh`;
+    },
   },
   files: {
     uploadAndCreateJob: (portalId: string) =>
